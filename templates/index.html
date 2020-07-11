@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" rel="stylesheet">
+    <title>Lab 3</title>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron mt-3">
+        <h1>Users</h1>
+        <ul class="list-group">
+            {%for i in range(userLen)%}
+            <a class="list-group-item list-group-item-action" href="/user/{{users[i].user_id}}">
+                <h3>{{users[i].first_name}}</h3>
+                Age <span class="badge badge-secondary">{{users[i].age}}</span>
+            </a>
+            {%endfor%}
+        </ul>
+        <a class="btn btn-primary" href="/adduser" style="margin-top: 25px" type="button">Add User</a>
+    </div>
+</div>
+</body>
+</html>
