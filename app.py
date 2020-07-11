@@ -1,9 +1,10 @@
+import random
+from faker import Faker
 from flask import Flask, render_template, request, redirect, url_for
+from os import environ
+
 from models.user import Db, User
 from modules.userform import UserForm
-from os import environ
-from faker import Faker
-import random
 
 fake = Faker()
 
@@ -13,12 +14,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "s14a-key"
 Db.init_app(app)
 
+
 @app.route('/')
 def index():
     # Query all
     users = User.query.all()
 
     return render_template("index.html", users=users, userLen=len(users))
+
 
 # @route /adduser - GET, POST
 @app.route('/adduser', methods=['GET', 'POST'])
@@ -39,12 +42,35 @@ def addUser():
         else:
             return render_template('adduser.html', form=form)
 
+
+# @route /user/edit/:id - GET, POST
+@app.route('/user/edit/<id>', methods=['GET', 'POST'])
+def editUser(id):
+    # If GET
+    if request.method == 'GET':
+        user = User.query.get(id)
+        return render_template('updateuser.html', user=user)
+    # If POST
+    else:
+        first_name = request.json['first_name']
+        age = request.json['age']
+
+        user = User.query.get(id)
+        Db.session.delete(user)
+        user.first_name = first_name
+        user.age = age
+        Db.session.add(user)
+        Db.session.commit()
+        return redirect(url_for('index'))
+
+
 # @route /adduser/<first_name>/<age>
 @app.route('/adduser/<first_name>/<age>')
 def addUserFromUrl(first_name, age):
     Db.session.add(User(first_name=first_name, age=age))
     Db.session.commit()
     return redirect(url_for('index'))
+
 
 @app.route('/user/<id>', methods=['GET', 'POST'])
 def getOrRemoveUser(id):
@@ -56,6 +82,7 @@ def getOrRemoveUser(id):
         Db.session.delete(user)
         Db.session.commit()
         return redirect(url_for('index'))
+
 
 @app.route('/mock/<num>')
 def MockUsers(num):

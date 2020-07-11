@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" rel="stylesheet">
+    <title>Lab 3</title>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron mt-3">
+        <h1>Update User</h1>
+        <form style="margin-top: 25px">
+            <input class="form-control" hidden id="user_id" type="text" value="{{user.user_id}}">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="first_name">First Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="first_name" type="text" value="{{user.first_name}}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="age">Age</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="age" type="number" value="{{user.age}}">
+                </div>
+            </div>
+            <button class="btn btn-primary" data-target="#confirmModel" data-toggle="modal" onclick="updateModel()"
+                    type="button">
+                Confirm Identity
+            </button>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="confirmModel" role="dialog"
+                 tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirm Updates</h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="background-color: #ddd">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <h3 id="new_name"></h3>
+                                    Age <span class="badge badge-secondary" id="new_age"></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-primary" onclick="update()" type="button">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script crossorigin="anonymous"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+    function updateModel() {
+        $('#new_name').text($('#first_name').val());
+        $('#new_age').text($('#age').val());
+    }
+
+    async function update() {
+        const data = {
+            first_name: $('#first_name').val(),
+            age: Number($('#age').val())
+        }
+        await fetch('/user/edit/{{user.user_id}}', {
+            body: JSON.stringify(data),
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        window.location = '/user/{{user.user_id}}'
+    }
+</script>
+</body>
+</html>
