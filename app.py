@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 from models.user import Db, User
 from modules.userform import UserForm
 from os import environ
+from faker import Faker
+import random
+
+fake = Faker()
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
@@ -53,4 +57,15 @@ def getOrRemoveUser(id):
         Db.session.commit()
         return redirect(url_for('index'))
 
-
+@app.route('/mock/<num>')
+def MockUsers(num):
+    n = int(num)
+    if n < 0:
+        return "Number must be greater than zero"
+    for _ in range(n):
+        first_name = fake.name().split(' ')[0]
+        age = random.randrange(18, 100, 1)
+        new_user = User(first_name=first_name, age=age)
+        Db.session.add(new_user)
+        Db.session.commit()
+    return redirect(url_for('index'))
